@@ -1,0 +1,41 @@
+{
+  "categoriesCount": 6,
+  "menuItemsCount": 2,
+  "details": [
+    {
+      "name": "Desserts",
+      "id": "697af16c6b6fa5d68b04b32f",
+      "itemCount": 0
+    },
+    {
+      "name": "Italian",
+      "id": "697c2fbcd15fee0f5bd65328",
+      "itemCount": 1
+    },
+    {
+      "name": "Fast Food",
+      "id": "697c2fd2d15fee0f5bd6532b",
+      "itemCount": 1
+    },
+    {
+      "name": "Chinese Food",
+      "id": "697c347bef8df4f6cffd3334",
+      "itemCount": 0
+    },
+    {
+      "name": "Drink",
+      "id": "697c34a2ef8df4f6cffd3337",
+      "itemCount": 0
+    },
+    {
+      "name": "Japanese",
+      "id": "697c3626ef8df4f6cffd3396",
+      "itemCount": 0
+    }
+  ],
+  "sampleMenuItem": {
+    "name": "pizza",
+    "categoryRef": "697c2fbcd15fee0f5bd65328",
+    "categoryType": "object"
+  }
+}
