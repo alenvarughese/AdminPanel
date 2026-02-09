@@ -12,7 +12,7 @@ const OrderPage = () => {
     const fetchOrders = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:5000/api/orders');
+            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/orders`);
             if (response.data.success) {
                 setOrders(response.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
             }
@@ -25,7 +25,7 @@ const OrderPage = () => {
 
     const updateStatus = async (orderId, newStatus) => {
         try {
-            const response = await axios.patch(`http://localhost:5000/api/orders/${orderId}/status`, { status: newStatus });
+            const response = await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/api/orders/${orderId}/status`, { status: newStatus });
             if (response.data.success) {
                 setOrders(orders.map(order => order._id === orderId ? { ...order, status: newStatus } : order));
             }
@@ -122,8 +122,8 @@ const OrderPage = () => {
                                                     onClick={() => updateStatus(order._id, 'Preparing')}
                                                     disabled={order.status === 'Completed' || order.status === 'Cancelled'}
                                                     className={`px-4 py-2 text-xs font-bold rounded-lg transition ${order.status === 'Completed' || order.status === 'Cancelled'
-                                                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-50'
-                                                            : 'bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white'
+                                                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-50'
+                                                        : 'bg-blue-50 text-blue-600 hover:bg-blue-600 hover:text-white'
                                                         }`}
                                                 >
                                                     Start Preparing
@@ -132,8 +132,8 @@ const OrderPage = () => {
                                                     onClick={() => updateStatus(order._id, 'Completed')}
                                                     disabled={order.status === 'Completed' || order.status === 'Cancelled'}
                                                     className={`px-4 py-2 text-xs font-bold rounded-lg transition ${order.status === 'Completed' || order.status === 'Cancelled'
-                                                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-50'
-                                                            : 'bg-green-50 text-green-600 hover:bg-green-600 hover:text-white'
+                                                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-50'
+                                                        : 'bg-green-50 text-green-600 hover:bg-green-600 hover:text-white'
                                                         }`}
                                                 >
                                                     Mark Delivered
@@ -142,8 +142,8 @@ const OrderPage = () => {
                                                     onClick={() => updateStatus(order._id, 'Cancelled')}
                                                     disabled={order.status === 'Completed' || order.status === 'Cancelled'}
                                                     className={`px-4 py-2 text-xs font-bold rounded-lg transition ${order.status === 'Completed' || order.status === 'Cancelled'
-                                                            ? 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-50'
-                                                            : 'bg-red-50 text-red-600 hover:bg-red-600 hover:text-white'
+                                                        ? 'bg-gray-100 text-gray-400 cursor-not-allowed opacity-50'
+                                                        : 'bg-red-50 text-red-600 hover:bg-red-600 hover:text-white'
                                                         }`}
                                                 >
                                                     Cancel Order
