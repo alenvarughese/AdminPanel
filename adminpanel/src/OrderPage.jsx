@@ -12,7 +12,7 @@ const OrderPage = () => {
     const fetchOrders = async () => {
         try {
             setLoading(true);
-            const response = await axios.get(`${import.meta.env.VITE_API_BASE_URL}/api/orders`);
+            const response = await axios.get('http://localhost:5000/api/orders');
             if (response.data.success) {
                 setOrders(response.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
             }
@@ -25,7 +25,7 @@ const OrderPage = () => {
 
     const updateStatus = async (orderId, newStatus) => {
         try {
-            const response = await axios.patch(`${import.meta.env.VITE_API_BASE_URL}/api/orders/${orderId}/status`, { status: newStatus });
+            const response = await axios.patch(`http://localhost:5000/api/orders/${orderId}/status`, { status: newStatus });
             if (response.data.success) {
                 setOrders(orders.map(order => order._id === orderId ? { ...order, status: newStatus } : order));
             }

@@ -11,10 +11,7 @@ let dashboardRoute = require('./Routes/dashboardRoute');
 connection();
 
 // Enable CORS for frontend communication
-app.use(cors({
-    origin: process.env.FRONTEND_URL || '*',
-    credentials: true
-}));
+app.use(cors());
 
 // Enable JSON parsing with higher limit for Base64 images
 app.use(ex.json({ limit: '50mb' }));
@@ -27,7 +24,6 @@ app.use(menuRoute);
 app.use(orderRoute);
 app.use(dashboardRoute);
 
-const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+app.listen(5000, () => {
+    console.log('Server running on port 5000');
 });
