@@ -16,64 +16,84 @@ const Order = require('./Schema/orderSchema');
 
 connection();
 
-// Enable CORS for frontend communication
-app.use(cors());
+// Robust CORS Configuration
+const corsOptions = {
+    origin: '*', // For debugging, allow all. Change to specific URLs later.
+    methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'Pragma', 'Expires'],
+    credentials: true,
+    optionsSuccessStatus: 200
+};
 
-// Enable JSON parsing with higher limit for Base64 images
+app.use(cors(corsOptions));
+app.options('*', cors(corsOptions)); // Handle all preflights
+
+// Enable JSON parsing
 app.use(ex.json({ limit: '50mb' }));
 app.use(ex.urlencoded({ extended: true, limit: '50mb' }));
 
-// Request Logger Middleware
+// Request Logger (Applied to EVERYTHING)
 app.use((req, res, next) => {
-    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
-    if (req.method === 'POST' || req.method === 'PATCH' || req.method === 'PUT') {
-        console.log('Body Keys:', Object.keys(req.body));
+    const timestamp = new Date().toISOString();
+    console.log(`[${timestamp}] ${req.method} ${req.url}`);
+    if (['POST', 'PUT', 'PATCH'].includes(req.method)) {
+        console.log(`[${timestamp}] Body:`, req.body ? Object.keys(req.body) : 'No Body');
     }
     next();
 });
 
-// Register routes
+// Root Diagnostic
 app.get('/', (req, res) => {
     res.send({
         message: 'Food Delivery API is running...',
         database: getStatus() ? 'Connected' : 'Disconnected',
-        environment: process.env.NODE_ENV || 'production'
+        timestamp: new Date().toISOString()
     });
 });
 
-// Diagnostics Route
+// Full Diagnostics
 app.get('/diagnostics', async (req, res) => {
     try {
-        const catCount = await Category.countDocuments();
-        const menuCount = await Menu.countDocuments();
-        const userCount = await User.countDocuments();
-        const orderCount = await Order.countDocuments();
+        const counts = {
+            categories: await Category.countDocuments(),
+            menuItems: await Menu.countDocuments(),
+            users: await User.countDocuments(),
+            orders: await Order.countDocuments()
+        };
 
-        const cats = await Category.find({}, { name: 1 });
+        const categoriesList = await Category.find({}, { name: 1 });
 
         res.send({
             success: true,
+            status: 'Diagnostic Report',
             database: getStatus() ? 'Connected' : 'Disconnected',
-            counts: {
-                categories: catCount,
-                menuItems: menuCount,
-                users: userCount,
-                orders: orderCount
-            },
-            categories: cats.map(c => c.name)
+            counts,
+            categories: categoriesList.map(c => c.name),
+            env: {
+                has_mongo_uri: !!process.env.MONGODB_URI,
+                port: process.env.PORT || 5000
+            }
         });
     } catch (err) {
+        console.error('Diagnostic error:', err);
         res.status(500).send({ success: false, error: err.message });
     }
 });
 
+// Routes
 app.use(userRoute);
 app.use(categoryRoute);
 app.use(menuRoute);
 app.use(orderRoute);
 app.use(dashboardRoute);
 
+// Error Handling Middleware
+app.use((err, req, res, next) => {
+    console.error('Unhandled Server Error:', err);
+    res.status(500).send({ success: false, message: 'Internal Server Error', error: err.message });
+});
+
 const PORT = process.env.PORT || 5000;
-app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+app.listen(PORT, '0.0.0.0', () => {
+    console.log(`Server live on port ${PORT}`);
 });
