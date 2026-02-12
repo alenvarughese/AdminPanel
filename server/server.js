@@ -32,7 +32,6 @@ const corsOptions = {
     optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
-app.options('/*', cors(corsOptions));
 
 // 3. Body Parsing
 app.use(ex.json({ limit: '50mb' }));
