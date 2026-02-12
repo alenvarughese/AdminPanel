@@ -5,6 +5,11 @@ console.log("Current API Base URL:", BASE_URL);
 
 const api = axios.create({
     baseURL: BASE_URL,
+    headers: {
+        'Cache-Control': 'no-cache',
+        'Pragma': 'no-cache',
+        'Expires': '0',
+    }
 });
 
 export default api;
