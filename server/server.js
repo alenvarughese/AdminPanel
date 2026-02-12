@@ -18,6 +18,15 @@ app.use(cors());
 app.use(ex.json({ limit: '50mb' }));
 app.use(ex.urlencoded({ extended: true, limit: '50mb' }));
 
+// Request Logger Middleware
+app.use((req, res, next) => {
+    console.log(`[${new Date().toISOString()}] ${req.method} ${req.url}`);
+    if (req.method === 'POST' || req.method === 'PATCH' || req.method === 'PUT') {
+        console.log('Body:', JSON.stringify(req.body).substring(0, 200));
+    }
+    next();
+});
+
 // Register routes
 app.get('/', (req, res) => {
     res.send({
