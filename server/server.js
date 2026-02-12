@@ -19,6 +19,10 @@ app.use(ex.json({ limit: '50mb' }));
 app.use(ex.urlencoded({ extended: true, limit: '50mb' }));
 
 // Register routes
+app.get('/', (req, res) => {
+    res.send('Food Delivery API is running...');
+});
+
 app.use(userRoute);
 app.use(categoryRoute);
 app.use(menuRoute);
