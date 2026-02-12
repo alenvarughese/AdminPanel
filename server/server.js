@@ -26,7 +26,7 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('*', cors(corsOptions)); // Handle all preflights
+app.options('(.*)', cors(corsOptions)); // Handle all preflights with Express 5 syntax
 
 // Enable JSON parsing
 app.use(ex.json({ limit: '50mb' }));
