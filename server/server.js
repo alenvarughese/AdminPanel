@@ -14,10 +14,16 @@ const Menu = require('./Schema/menuSchema');
 const User = require('./Schema/userSchema');
 const Order = require('./Schema/orderSchema');
 
+// 1. ABSOLUTE TOP LEVEL LOGGER (Capture every single hit)
+app.use((req, res, next) => {
+    const timestamp = new Date().toISOString();
+    console.log(`>>> [${timestamp}] ${req.method} ${req.url} - Origin: ${req.headers.origin || 'No Origin'}`);
+    next();
+});
+
 connection();
 
-// Robust CORS Configuration
-// The cors middleware handles OPTIONS preflights automatically when used with app.use()
+// 2. CORS Handling
 const corsOptions = {
     origin: '*',
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
@@ -25,19 +31,17 @@ const corsOptions = {
     credentials: true,
     optionsSuccessStatus: 200
 };
-
 app.use(cors(corsOptions));
+app.options('*', cors(corsOptions));
 
-// Enable JSON parsing
+// 3. Body Parsing
 app.use(ex.json({ limit: '50mb' }));
 app.use(ex.urlencoded({ extended: true, limit: '50mb' }));
 
-// Request Logger
+// 4. Detailed Body Logger
 app.use((req, res, next) => {
-    const timestamp = new Date().toISOString();
-    console.log(`[${timestamp}] ${req.method} ${req.url}`);
     if (['POST', 'PUT', 'PATCH'].includes(req.method)) {
-        console.log(`[${timestamp}] Body:`, req.body ? Object.keys(req.body) : 'No Body');
+        console.log(`[${new Date().toISOString()}] Body Keys:`, req.body ? Object.keys(req.body) : 'No Body');
     }
     next();
 });
@@ -51,9 +55,15 @@ app.get('/', (req, res) => {
     });
 });
 
-// Full Diagnostics
+// Full Diagnostics with TEST route
 app.get('/diagnostics', async (req, res) => {
     try {
+        // Optional test creation
+        if (req.query.test === 'true') {
+            const testCat = new Category({ name: 'Test Category ' + Date.now() });
+            await testCat.save();
+        }
+
         const counts = {
             categories: await Category.countDocuments(),
             menuItems: await Menu.countDocuments(),
@@ -71,7 +81,7 @@ app.get('/diagnostics', async (req, res) => {
             categories: categoriesList.map(c => c.name),
             env: {
                 has_mongo_uri: !!process.env.MONGODB_URI,
-                port: process.env.PORT || 5000
+                node_env: process.env.NODE_ENV
             }
         });
     } catch (err) {
@@ -87,7 +97,7 @@ app.use(menuRoute);
 app.use(orderRoute);
 app.use(dashboardRoute);
 
-// Error Handling Middleware
+// Error Handling
 app.use((err, req, res, next) => {
     console.error('Unhandled Server Error:', err);
     res.status(500).send({ success: false, message: 'Internal Server Error', error: err.message });

@@ -12,7 +12,7 @@ export default function CategoryPage() {
     const [showAddForm, setShowAddForm] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
 
-    
+
     useEffect(() => {
         fetchCategories();
     }, []);
@@ -36,10 +36,16 @@ export default function CategoryPage() {
 
     const handleAddCategory = async (e) => {
         e.preventDefault();
-        if (!categoryForm.name) return;
+        console.log("Button clicked! Form submission started.");
+        if (!categoryForm.name) {
+            console.warn("Aborting: Category name is empty.");
+            return;
+        }
 
+        console.log("Submitting category name:", categoryForm.name);
         try {
             const response = await categoryService.addCategory({ name: categoryForm.name });
+            console.log("Service response in Component:", response);
             if (response.success) {
                 // Refresh list
                 fetchCategories();
