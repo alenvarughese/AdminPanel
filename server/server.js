@@ -17,8 +17,9 @@ const Order = require('./Schema/orderSchema');
 connection();
 
 // Robust CORS Configuration
+// The cors middleware handles OPTIONS preflights automatically when used with app.use()
 const corsOptions = {
-    origin: '*', // For debugging, allow all. Change to specific URLs later.
+    origin: '*',
     methods: ['GET', 'POST', 'PUT', 'PATCH', 'DELETE', 'OPTIONS'],
     allowedHeaders: ['Content-Type', 'Authorization', 'Cache-Control', 'Pragma', 'Expires'],
     credentials: true,
@@ -26,13 +27,12 @@ const corsOptions = {
 };
 
 app.use(cors(corsOptions));
-app.options('(.*)', cors(corsOptions)); // Handle all preflights with Express 5 syntax
 
 // Enable JSON parsing
 app.use(ex.json({ limit: '50mb' }));
 app.use(ex.urlencoded({ extended: true, limit: '50mb' }));
 
-// Request Logger (Applied to EVERYTHING)
+// Request Logger
 app.use((req, res, next) => {
     const timestamp = new Date().toISOString();
     console.log(`[${timestamp}] ${req.method} ${req.url}`);
