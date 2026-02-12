@@ -2,7 +2,7 @@ require('dotenv').config();
 let ex = require('express');
 let app = ex();
 let cors = require('cors');
-let connection = require('./DB/db');
+let { connection, getStatus } = require('./DB/db');
 let userRoute = require('./Routes/userRoute');
 let categoryRoute = require('./Routes/categoryRoute');
 let menuRoute = require('./Routes/menuRoute');
@@ -20,7 +20,11 @@ app.use(ex.urlencoded({ extended: true, limit: '50mb' }));
 
 // Register routes
 app.get('/', (req, res) => {
-    res.send('Food Delivery API is running...');
+    res.send({
+        message: 'Food Delivery API is running...',
+        database: getStatus() ? 'Connected' : 'Disconnected',
+        environment: process.env.NODE_ENV || 'production'
+    });
 });
 
 app.use(userRoute);
