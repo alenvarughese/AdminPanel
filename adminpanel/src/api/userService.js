@@ -1,12 +1,10 @@
-import axios from 'axios';
-
-const API_BASE_URL = 'http://localhost:5000/api';
+import api from './api';
 
 export const userAPI = {
     // Get all users
     getAllUsers: async () => {
         try {
-            const response = await axios.get(`${API_BASE_URL}/users`);
+            const response = await api.get('/api/users');
             return response.data;
         } catch (error) {
             console.error('Error fetching users:', error);
@@ -17,7 +15,7 @@ export const userAPI = {
     // Delete a user
     deleteUser: async (userId) => {
         try {
-            const response = await axios.delete(`${API_BASE_URL}/users/${userId}`);
+            const response = await api.delete(`/api/users/${userId}`);
             return response.data;
         } catch (error) {
             console.error('Error deleting user:', error);
@@ -28,7 +26,7 @@ export const userAPI = {
     // Update user status
     updateUserStatus: async (userId, status) => {
         try {
-            const response = await axios.patch(`${API_BASE_URL}/users/${userId}/status`, { status });
+            const response = await api.patch(`/api/users/${userId}/status`, { status });
             return response.data;
         } catch (error) {
             console.error('Error updating user status:', error);

@@ -1,10 +1,10 @@
-const API_URL = 'http://localhost:5000/api';
+import api from './api';
 
 export const categoryService = {
     getAllCategories: async () => {
         try {
-            const response = await fetch(`${API_URL}/categories`);
-            return await response.json();
+            const response = await api.get('/api/categories');
+            return response.data;
         } catch (error) {
             console.error('Error fetching categories:', error);
             return { success: false, message: 'Server connection error' };
@@ -13,14 +13,8 @@ export const categoryService = {
 
     addCategory: async (categoryData) => {
         try {
-            const response = await fetch(`${API_URL}/categories`, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify(categoryData),
-            });
-            return await response.json();
+            const response = await api.post('/api/categories', categoryData);
+            return response.data;
         } catch (error) {
             console.error('Error adding category:', error);
             return { success: false, message: 'Server connection error' };
@@ -29,10 +23,8 @@ export const categoryService = {
 
     deleteCategory: async (id) => {
         try {
-            const response = await fetch(`${API_URL}/categories/${id}`, {
-                method: 'DELETE',
-            });
-            return await response.json();
+            const response = await api.delete(`/api/categories/${id}`);
+            return response.data;
         } catch (error) {
             console.error('Error deleting category:', error);
             return { success: false, message: 'Server connection error' };

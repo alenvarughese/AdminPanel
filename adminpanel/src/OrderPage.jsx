@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import axios from 'axios';
+import api from './api/api';
 
 const OrderPage = () => {
     const [orders, setOrders] = useState([]);
@@ -12,7 +12,7 @@ const OrderPage = () => {
     const fetchOrders = async () => {
         try {
             setLoading(true);
-            const response = await axios.get('http://localhost:5000/api/orders');
+            const response = await api.get('/api/orders');
             if (response.data.success) {
                 setOrders(response.data.data.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
             }
@@ -25,7 +25,7 @@ const OrderPage = () => {
 
     const updateStatus = async (orderId, newStatus) => {
         try {
-            const response = await axios.patch(`http://localhost:5000/api/orders/${orderId}/status`, { status: newStatus });
+            const response = await api.patch(`/api/orders/${orderId}/status`, { status: newStatus });
             if (response.data.success) {
                 setOrders(orders.map(order => order._id === orderId ? { ...order, status: newStatus } : order));
             }

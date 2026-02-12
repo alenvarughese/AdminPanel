@@ -1,10 +1,8 @@
-import axios from 'axios';
-
-const API_URL = 'http://localhost:5000';
+import api from './api';
 
 export const fetchDashboardStats = async () => {
     try {
-        const response = await axios.get(`${API_URL}/api/dashboard-stats`);
+        const response = await api.get('/api/dashboard-stats');
         return response.data;
     } catch (error) {
         console.error('Error fetching dashboard stats:', error);
